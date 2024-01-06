@@ -7,7 +7,7 @@ networks:
 volumes:
   redis-data:
   etcd-data:
-  cassandra-data:
+  scylladb-data:
 
 services:
   jaeger:
@@ -18,11 +18,11 @@ services:
     networks:
       - app-network
 
-  cassandra:
-    image: cassandra:4
+  scylladb:
+    image: scylladb/scylla:5.4
     ports:
       - "9042:9042"
     networks:
       - app-network
     volumes:
-      - cassandra-data:/var/lib/cassandra/data
+      - scylladb-data:/var/lib/scylla

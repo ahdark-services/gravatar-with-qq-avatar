@@ -2,6 +2,8 @@ module github.com/AH-dark/gravatar-with-qq-avatar
 
 go 1.21
 
+replace github.com/gocql/gocql => github.com/scylladb/gocql v1.12.0
+
 require (
 	github.com/AH-dark/bytestring v1.0.0
 	github.com/bytedance/sonic v1.10.2
