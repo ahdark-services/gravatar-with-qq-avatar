@@ -2,6 +2,7 @@ package logging
 
 import (
 	"context"
+	"github.com/samber/lo"
 
 	"github.com/spf13/viper"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
@@ -23,7 +24,7 @@ func NewLogger(ctx context.Context, viper *viper.Viper, options []zap.Option) (L
 	ctx, span := tracer.Start(ctx, "logging.NewLogger")
 	defer span.End()
 
-	zapLogger, err := zap.NewDevelopment(options...)
+	zapLogger, err := lo.If(viper.GetBool("debug"), zap.NewDevelopment).Else(zap.NewProduction)(options...)
 	if err != nil {
 		span.RecordError(err)
 		otelzap.L().Ctx(ctx).Error("failed to create logger", zap.Error(err))
