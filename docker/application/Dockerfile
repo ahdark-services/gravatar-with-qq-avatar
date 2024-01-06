@@ -7,8 +7,7 @@ WORKDIR /go/src/app
 RUN apt update && apt install -y \
     make \
     gcc \
-    libwebp-dev \
-    libwebp-tools
+    libwebp-dev
 COPY go.mod go.sum ./
 RUN go mod download
 
