@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/AH-dark/bytestring"
+	md5simd "github.com/minio/md5-simd"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.opentelemetry.io/otel"
 	"go.uber.org/fx"
@@ -33,8 +34,11 @@ func generate(ctx context.Context, md5QQMappingRepo dal.MD5QQMappingRepo) error 
 	ctx, span := tracer.Start(ctx, "cmd.generator.generate")
 	defer span.End()
 
+	svr := md5simd.NewServer()
+	defer svr.Close()
+
 	for i := from; i <= to; i++ {
-		md5Hash := cryptor.Md5(bytestring.StringToBytes(fmt.Sprintf("%d@qq.com", i)))
+		md5Hash := cryptor.Md5WithServer(svr, bytestring.StringToBytes(fmt.Sprintf("%d@qq.com", i)))
 
 		if err := md5QQMappingRepo.InsertMapping(ctx, i, bytestring.BytesToString(md5Hash)); err != nil {
 			otelzap.L().Ctx(ctx).Error("insert qq avatar failed", zap.Error(err))

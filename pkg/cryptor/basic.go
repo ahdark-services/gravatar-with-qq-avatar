@@ -39,18 +39,26 @@ func Base64StdDecode(s []byte) ([]byte, error) {
 	return b[:n], nil
 }
 
+func HexEncode(s []byte) []byte {
+	dst := make([]byte, hex.EncodedLen(len(s)))
+	hex.Encode(dst, s)
+	return dst
+}
+
 // Md5 return the md5 value of bytes.
 func Md5(s []byte) []byte {
 	md5Server := md5simd.NewServer()
 	defer md5Server.Close()
 
-	h := md5Server.NewHash()
+	return Md5WithServer(md5Server, s)
+}
+
+func Md5WithServer(svr md5simd.Server, s []byte) []byte {
+	h := svr.NewHash()
 	defer h.Close()
 
 	h.Write(s)
-	dst := make([]byte, 32)
-	hex.Encode(dst, h.Sum(nil))
-	return dst
+	return HexEncode(h.Sum(nil))
 }
 
 // Md5WithBase64 return the md5 value of bytes with base64.
