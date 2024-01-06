@@ -11,13 +11,13 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
-	"github.com/AH-dark/gravatar-with-qq-support/database/dal"
-	"github.com/AH-dark/gravatar-with-qq-support/entry"
-	"github.com/AH-dark/gravatar-with-qq-support/pkg/cryptor"
+	"github.com/AH-dark/gravatar-with-qq-avatar/database/dal"
+	"github.com/AH-dark/gravatar-with-qq-avatar/entry"
+	"github.com/AH-dark/gravatar-with-qq-avatar/pkg/cryptor"
 )
 
 var ctx = context.Background()
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/cmd/generator")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/cmd/generator")
 
 var (
 	from = int64(10000)

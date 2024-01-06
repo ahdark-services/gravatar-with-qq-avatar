@@ -10,11 +10,11 @@ import (
 	"go.uber.org/zap"
 )
 
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/internal/config")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/internal/config")
 
 var defaultConfig = map[string]interface{}{
-	"name":        "gravatar-with-qq-support",
-	"namespace":   "gravatar-with-qq-support",
+	"name":        "gravatar-with-qq-avatar",
+	"namespace":   "gravatar-with-qq-avatar",
 	"version":     "0.0.1",
 	"instance_id": uuid.New(),
 }
@@ -30,8 +30,8 @@ func NewViper(ctx context.Context) (*viper.Viper, error) {
 	vip.SetConfigType("yaml")
 	vip.AddConfigPath(".")
 	vip.AddConfigPath("./config")
-	vip.AddConfigPath("/etc/gravatar-with-qq-support")
-	vip.AddConfigPath("$HOME/.gravatar-with-qq-support")
+	vip.AddConfigPath("/etc/gravatar-with-qq-avatar")
+	vip.AddConfigPath("$HOME/.gravatar-with-qq-avatar")
 
 	for k, v := range defaultConfig {
 		vip.SetDefault(k, v)

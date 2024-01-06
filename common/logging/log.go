@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/internal/logging")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/internal/logging")
 
 type Logger struct {
 	fx.Out

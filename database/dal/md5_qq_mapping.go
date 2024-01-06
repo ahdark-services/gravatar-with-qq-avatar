@@ -7,7 +7,7 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
-	"github.com/AH-dark/gravatar-with-qq-support/database/models"
+	"github.com/AH-dark/gravatar-with-qq-avatar/database/models"
 )
 
 type MD5QQMappingRepo interface {
@@ -30,7 +30,7 @@ func (repo *MD5QQMappingRepoImpl) GetQQIdByEmailMD5(ctx context.Context, emailMD
 
 	var qqId int64
 	if err := models.MD5QQMappingTable.
-		GetQueryContext(ctx, *repo.Session, "qq_id").
+		SelectQueryContext(ctx, *repo.Session, "qq_id").
 		BindStruct(&models.MD5QQMapping{EmailMD5: emailMD5}).
 		Scan(&qqId); err != nil {
 		otelzap.L().Ctx(ctx).Error("get qq id by email md5 failed", zap.Error(err))

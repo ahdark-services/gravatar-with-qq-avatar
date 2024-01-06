@@ -3,12 +3,12 @@ package entry
 import (
 	"go.uber.org/fx"
 
-	"github.com/AH-dark/gravatar-with-qq-support/common/config"
-	"github.com/AH-dark/gravatar-with-qq-support/common/infra"
-	"github.com/AH-dark/gravatar-with-qq-support/common/logging"
-	"github.com/AH-dark/gravatar-with-qq-support/common/observability"
-	"github.com/AH-dark/gravatar-with-qq-support/common/settings"
-	"github.com/AH-dark/gravatar-with-qq-support/database"
+	"github.com/AH-dark/gravatar-with-qq-avatar/common/config"
+	"github.com/AH-dark/gravatar-with-qq-avatar/common/infra"
+	"github.com/AH-dark/gravatar-with-qq-avatar/common/logging"
+	"github.com/AH-dark/gravatar-with-qq-avatar/common/observability"
+	"github.com/AH-dark/gravatar-with-qq-avatar/database"
+	"github.com/AH-dark/gravatar-with-qq-avatar/services"
 )
 
 func AppEntries() fx.Option {
@@ -17,8 +17,8 @@ func AppEntries() fx.Option {
 		logging.Module(),
 		fx.WithLogger(logging.FxLogger),
 		observability.Module(),
-		settings.Module(),
 		infra.Module(),
 		database.Module(),
+		services.Module(),
 	)
 }

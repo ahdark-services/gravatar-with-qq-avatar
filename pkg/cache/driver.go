@@ -7,7 +7,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/internal/cache")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/internal/cache")
 
 type Driver interface {
 	Get(ctx context.Context, key string) (interface{}, bool)

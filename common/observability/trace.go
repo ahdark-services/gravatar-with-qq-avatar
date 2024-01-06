@@ -15,7 +15,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/internal/observability")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/internal/observability")
 
 func NewTraceExporter(ctx context.Context, vip *viper.Viper) (tracesdk.SpanExporter, error) {
 	ctx, span := tracer.Start(ctx, "observability.NewTraceExporter")

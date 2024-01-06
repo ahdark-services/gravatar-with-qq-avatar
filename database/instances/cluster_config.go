@@ -9,7 +9,7 @@ import (
 	"go.opentelemetry.io/otel"
 )
 
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-support/database/instances")
+var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/database/instances")
 
 func NewClusterConfig(ctx context.Context, vip *viper.Viper) *gocql.ClusterConfig {
 	ctx, span := tracer.Start(ctx, "database.instances.NewClusterConfig")

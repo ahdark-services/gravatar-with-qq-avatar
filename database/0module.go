@@ -3,8 +3,8 @@ package database
 import (
 	"go.uber.org/fx"
 
-	"github.com/AH-dark/gravatar-with-qq-support/database/dal"
-	"github.com/AH-dark/gravatar-with-qq-support/database/instances"
+	"github.com/AH-dark/gravatar-with-qq-avatar/database/dal"
+	"github.com/AH-dark/gravatar-with-qq-avatar/database/instances"
 )
 
 func Module() fx.Option {

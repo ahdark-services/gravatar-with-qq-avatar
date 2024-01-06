@@ -2,7 +2,7 @@ package cache
 
 import (
 	"encoding/gob"
-	"github.com/AH-dark/gravatar-with-qq-support/pkg/utils"
+	"github.com/AH-dark/gravatar-with-qq-avatar/pkg/utils"
 )
 
 type redisItem struct {
