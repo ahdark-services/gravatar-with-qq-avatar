@@ -50,3 +50,10 @@ etcd:
     cert_file: ""
     key_file: ""
     insecure_skip_verify: false
+
+cassandra:
+  hosts:
+    - "localhost:9042"
+  username: ""
+  password: ""
+  keyspace: "gravatar"

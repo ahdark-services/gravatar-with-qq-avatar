@@ -8,6 +8,7 @@ import (
 	"github.com/AH-dark/gravatar-with-qq-support/common/logging"
 	"github.com/AH-dark/gravatar-with-qq-support/common/observability"
 	"github.com/AH-dark/gravatar-with-qq-support/common/settings"
+	"github.com/AH-dark/gravatar-with-qq-support/database"
 )
 
 func AppEntries() fx.Option {
@@ -18,5 +19,6 @@ func AppEntries() fx.Option {
 		observability.Module(),
 		settings.Module(),
 		infra.Module(),
+		database.Module(),
 	)
 }
