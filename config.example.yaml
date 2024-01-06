@@ -26,31 +26,6 @@ observability:
       type: prometheus
       listen: "0.0.0.0:9201"
 
-redis:
-  mode: standalone
-  host: redis
-  port: 6379
-  username: ""
-  password: ""
-
-mq:
-  host: localhost
-  port: 5672
-  username: cecilia
-  password: cecilia
-  vhost: ""
-
-etcd:
-  endpoints:
-    - "http://localhost:2379"
-  username: ""
-  password: ""
-  tls:
-    ca_file: ""
-    cert_file: ""
-    key_file: ""
-    insecure_skip_verify: false
-
 cassandra:
   hosts:
     - "localhost:9042"

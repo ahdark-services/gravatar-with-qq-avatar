@@ -26,7 +26,7 @@ WORKDIR /app
 RUN apk add --no-cache ca-certificates libwebp libwebp-tools
 
 # Copy the binary from the build stage
-COPY --from=builder /go/src/app/bin/${COMPONENT} ./application
+COPY --from=builder /go/src/app/bin/${COMPONENT} /app/application
 
 # Run the binary
-ENTRYPOINT ["./application"]
+ENTRYPOINT /app/application

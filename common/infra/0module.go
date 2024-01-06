@@ -10,7 +10,6 @@ var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/internal/in
 func Module() fx.Option {
 	return fx.Module(
 		"internal.infra",
-		fx.Provide(NewCacheDriver),
 		fx.Provide(NewPrometheusRegistry),
 		fx.Invoke(InvokePrometheusGoCollector),
 		fx.Provide(NewRedisClient),
