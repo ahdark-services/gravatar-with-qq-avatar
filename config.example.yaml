@@ -1,0 +1,52 @@
+debug: false
+
+logging:
+  caller: true
+  trace_id: true
+  stacktrace: error
+
+server:
+  network: "tcp"
+  address: "0.0.0.0"
+  port: 8080
+
+observability:
+  trace:
+    exporter:
+      type: "otlp-grpc"
+      endpoint: "localhost:4317"
+      timeout: 10s
+      insecure: true
+    batch_timeout: 5s
+    max_batch_entries: 512
+    export_timeout: 30s
+    max_queue_size: 2048
+  metric:
+    reader:
+      type: prometheus
+      listen: "0.0.0.0:9201"
+
+redis:
+  mode: standalone
+  host: redis
+  port: 6379
+  username: ""
+  password: ""
+
+mq:
+  host: localhost
+  port: 5672
+  username: cecilia
+  password: cecilia
+  vhost: ""
+
+etcd:
+  endpoints:
+    - "http://localhost:2379"
+  username: ""
+  password: ""
+  tls:
+    ca_file: ""
+    cert_file: ""
+    key_file: ""
+    insecure_skip_verify: false
