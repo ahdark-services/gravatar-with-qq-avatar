@@ -1,8 +1,11 @@
 package avatar
 
 import (
+	"bytes"
 	"context"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/AH-dark/bytestring"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -10,6 +13,7 @@ import (
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 
+	"github.com/AH-dark/gravatar-with-qq-avatar/pkg/cryptor"
 	"github.com/AH-dark/gravatar-with-qq-avatar/services/avatar"
 )
 
@@ -23,7 +27,7 @@ type GetAvatarRequest struct {
 }
 
 func (h *handlers) GetAvatar(ctx context.Context, c *app.RequestContext) {
-	ctx, span := tracer.Start(ctx, "server.controllers.avatar.GetAvatar")
+	ctx, span := tracer.Start(ctx, "server.controllers.avatarData.GetAvatar")
 	defer span.End()
 
 	var req GetAvatarRequest
@@ -53,23 +57,31 @@ func (h *handlers) GetAvatar(ctx context.Context, c *app.RequestContext) {
 		c.Header("Content-Type", "image/png")
 	}
 
-	qqAvatar, err := h.AvatarService.GetQQAvatar(ctx, req.Hash, args)
+	avatarData, lastModified, err := h.AvatarService.GetAvatar(ctx, req.Hash, args)
 	if err != nil {
-		otelzap.L().Ctx(ctx).Warn("get qq avatar failed", zap.Error(err))
-	} else {
-		c.Status(200)
-		c.SetBodyStream(qqAvatar, -1)
+		otelzap.L().Ctx(ctx).Error("get avatar data failed", zap.Error(err))
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	gravatar, err := h.AvatarService.GetGravatar(ctx, req.Hash, args)
-	if err != nil {
-		otelzap.L().Ctx(ctx).Error("get gravatar failed", zap.Error(err))
-		c.AbortWithStatus(500)
+	if avatarData == nil {
+		c.NotFound()
 		return
 	}
-	defer gravatar.Close()
 
-	c.Status(200)
-	c.SetBodyStream(gravatar, -1)
+	c.Data(http.StatusOK, lo.If(args.EnableWebp, "image/webp").Else("image/png"), avatarData)
+	if !lastModified.IsZero() {
+		c.Header("Last-Modified", lastModified.UTC().Format(time.RFC1123))
+	}
+
+	md5 := cryptor.Md5(avatarData)
+	c.Header("ETag", bytestring.BytesToString(md5))
+	if bytes.Equal(md5, c.GetHeader("If-None-Match")) {
+		c.Status(http.StatusNotModified)
+		return
+	}
+
+	c.Header("Cache-Control", "public, max-age=86400, immutable")
+	c.Header("Expires", time.Now().Add(86400*time.Second).UTC().Format(time.RFC1123))
+	c.Header("X-Content-Type-Options", "nosniff")
 }
