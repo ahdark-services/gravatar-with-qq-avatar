@@ -6,7 +6,6 @@ import (
 	"github.com/imroc/req/v3"
 	"github.com/samber/lo"
 	"image"
-	"image/jpeg"
 	"strconv"
 	"time"
 
@@ -71,9 +70,9 @@ func (s *service) getGravatar(ctx context.Context, hash string, args GetAvatarAr
 
 	defer resp.Body.Close()
 
-	img, err := jpeg.Decode(resp.Body)
+	img, err := parseImage(resp.GetHeader("Content-Type"), resp.Body)
 	if err != nil {
-		otelzap.L().Ctx(ctx).Error("failed to decode gravatar", zap.Error(err))
+		otelzap.L().Ctx(ctx).Error("parse image failed", zap.Error(err))
 		return GetGravatarResult{}, err
 	}
 

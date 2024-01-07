@@ -3,14 +3,13 @@ package avatar
 import (
 	"context"
 	"fmt"
-	"github.com/imroc/req/v3"
-	"go.uber.org/zap"
 	"image"
-	"image/jpeg"
 	"strconv"
 
+	"github.com/imroc/req/v3"
 	"github.com/nfnt/resize"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.uber.org/zap"
 )
 
 func initQQClient() *req.Client {
@@ -67,9 +66,9 @@ func (s *service) getQQAvatar(ctx context.Context, hash string, args GetAvatarAr
 
 	defer resp.Body.Close()
 
-	img, err := jpeg.Decode(resp.Body)
+	img, err := parseImage(resp.GetHeader("Content-Type"), resp.Body)
 	if err != nil {
-		otelzap.L().Ctx(ctx).Error("decode qq avatar failed", zap.Error(err))
+		otelzap.L().Ctx(ctx).Error("parse image failed", zap.Error(err))
 		return nil, err
 	}
 
