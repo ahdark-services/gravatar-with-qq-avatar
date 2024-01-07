@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
+
 	"github.com/AH-dark/bytestring"
 	md5simd "github.com/minio/md5-simd"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
-	"go.opentelemetry.io/otel"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
@@ -17,7 +17,6 @@ import (
 )
 
 var ctx = context.Background()
-var tracer = otel.Tracer("github.com/AH-dark/gravatar-with-qq-avatar/cmd/generator")
 
 var (
 	from = int64(10000)
@@ -31,9 +30,6 @@ func init() {
 }
 
 func generate(ctx context.Context, md5QQMappingRepo dal.MD5QQMappingRepo) error {
-	ctx, span := tracer.Start(ctx, "cmd.generator.generate")
-	defer span.End()
-
 	svr := md5simd.NewServer()
 	defer svr.Close()
 

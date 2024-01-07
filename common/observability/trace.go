@@ -74,7 +74,7 @@ func NewTraceProvider(
 	ctx, span := tracer.Start(ctx, "observability.NewTraceProvider")
 	defer span.End()
 
-	tp := tracesdk.NewTracerProvider(
+	opts := []tracesdk.TracerProviderOption{
 		tracesdk.WithResource(resource),
 		tracesdk.WithBatcher(
 			exporter,
@@ -83,7 +83,10 @@ func NewTraceProvider(
 			tracesdk.WithExportTimeout(vip.GetDuration("observability.trace.export_timeout")),
 			tracesdk.WithMaxQueueSize(vip.GetInt("observability.trace.max_queue_size")),
 		),
-	)
+		tracesdk.WithSampler(tracesdk.TraceIDRatioBased(vip.GetFloat64("observability.trace.sampling_rate"))),
+	}
+
+	tp := tracesdk.NewTracerProvider(opts...)
 
 	lc.Append(fx.Hook{
 		OnStop: func(ctx context.Context) error {
