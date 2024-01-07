@@ -39,6 +39,7 @@ func NewServer(ctx context.Context, vip *viper.Viper, promRegistry *promclient.R
 			hertzprometheus.WithDisableServer(true),
 		)),
 		server.WithTransport(netpoll.NewTransporter),
+		server.WithRedirectTrailingSlash(false),
 	)
 	svr.Use(hertztracing.ServerMiddleware(cfg))
 
