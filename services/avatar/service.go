@@ -2,11 +2,8 @@ package avatar
 
 import (
 	"context"
-	"errors"
-	"fmt"
+	"github.com/samber/lo"
 	"image/png"
-	"io"
-	"net/http"
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/common/bytebufferpool"
@@ -36,34 +33,18 @@ type Service interface {
 }
 
 type service struct {
-	fx.In
+	fx.In            `ignore-unexported:"true"`
 	MD5QQMappingRepo dal.MD5QQMappingRepo
+
+	qqAvatarClient *req.Client
+	gravatarClient *req.Client
 }
 
 func NewService(s service) Service {
+	s.qqAvatarClient = initQQClient()
+	s.gravatarClient = initGravatarClient()
+
 	return &s
-}
-
-func (s *service) downloadAvatar(ctx context.Context, url string) (io.ReadCloser, *req.Response, error) {
-	ctx, span := tracer.Start(ctx, "service.AvatarService.downloadAvatar")
-	defer span.End()
-
-	resp, err := req.NewRequest().SetContext(ctx).Get(url)
-	if err != nil {
-		otelzap.L().Ctx(ctx).Error("download avatar failed", zap.Error(err))
-		return nil, resp, err
-	}
-
-	if resp.StatusCode != 200 || resp.IsErrorState() {
-		otelzap.L().Ctx(ctx).Error("download avatar failed")
-		return nil, resp, errors.New(http.StatusText(resp.StatusCode))
-	}
-
-	if resp.IsSuccessState() {
-		return resp.Body, resp, nil
-	}
-
-	return nil, resp, fmt.Errorf("download avatar failed, status code: %d", resp.StatusCode)
 }
 
 func (s *service) GetAvatar(ctx context.Context, hash string, args GetAvatarArgs) ([]byte, time.Time, error) {
@@ -76,11 +57,13 @@ func (s *service) GetAvatar(ctx context.Context, hash string, args GetAvatarArgs
 	img, err := s.getQQAvatar(ctx, hash, args)
 	if err != nil {
 		res, err := s.getGravatar(ctx, hash, args)
-		if errors.Is(err, errors.New("404 Not Found")) {
-			return nil, time.Time{}, nil
-		} else if err != nil {
+		if err != nil {
 			otelzap.L().Ctx(ctx).Warn("get gravatar failed", zap.Error(err))
 			return nil, time.Time{}, err
+		}
+
+		if lo.IsEmpty(res) {
+			return nil, time.Time{}, nil
 		}
 
 		img = res.Avatar

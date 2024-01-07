@@ -21,7 +21,7 @@ type GetAvatarRequest struct {
 	Size    int64  `query:"s"`
 	Default string `query:"d"`
 	Rating  string `query:"r"`
-	Force   bool   `query:"f"`
+	Force   string `query:"f"`
 }
 
 func (h *handlers) GetAvatar(ctx context.Context, c *app.RequestContext) {
@@ -38,7 +38,7 @@ func (h *handlers) GetAvatar(ctx context.Context, c *app.RequestContext) {
 	args := avatar.GetAvatarArgs{
 		Size:         req.Size,
 		Default:      req.Default,
-		ForceDefault: req.Force,
+		ForceDefault: req.Force == "y",
 		Rating:       req.Rating,
 		EnableWebp: lo.SomeBy(strings.Split(bytestring.BytesToString(c.GetHeader("Accept")), ","), func(item string) bool {
 			return strings.HasPrefix(item, "image/webp")
