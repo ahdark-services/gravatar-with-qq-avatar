@@ -2,9 +2,7 @@ module github.com/AH-dark/gravatar-with-qq-avatar
 
 go 1.21
 
-replace (
-	github.com/gocql/gocql => github.com/scylladb/gocql v1.12.0
-)
+replace github.com/gocql/gocql => github.com/scylladb/gocql v1.12.0
 
 require (
 	github.com/AH-dark/bytestring v1.0.0
@@ -13,6 +11,8 @@ require (
 	github.com/go-redis/redis_rate/v10 v10.0.1
 	github.com/gocql/gocql v1.6.0
 	github.com/google/uuid v1.5.0
+	github.com/hertz-contrib/etag v0.1.0
+	github.com/hertz-contrib/gzip v0.0.3
 	github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1
 	github.com/imroc/req/v3 v3.42.3
 	github.com/kolesa-team/go-webp v1.0.4

@@ -1,7 +1,6 @@
 package avatar
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 	"strings"
@@ -13,7 +12,6 @@ import (
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 
-	"github.com/AH-dark/gravatar-with-qq-avatar/pkg/cryptor"
 	"github.com/AH-dark/gravatar-with-qq-avatar/services/avatar"
 )
 
@@ -73,14 +71,6 @@ func (h *handlers) GetAvatar(ctx context.Context, c *app.RequestContext) {
 	if !lastModified.IsZero() {
 		c.Header("Last-Modified", lastModified.UTC().Format(time.RFC1123))
 	}
-
-	md5 := cryptor.Md5(avatarData)
-	c.Header("ETag", bytestring.BytesToString(md5))
-	if bytes.Equal(md5, c.GetHeader("If-None-Match")) {
-		c.Status(http.StatusNotModified)
-		return
-	}
-
 	c.Header("Cache-Control", "public, max-age=86400, immutable")
 	c.Header("Expires", time.Now().Add(86400*time.Second).UTC().Format(time.RFC1123))
 	c.Header("X-Content-Type-Options", "nosniff")

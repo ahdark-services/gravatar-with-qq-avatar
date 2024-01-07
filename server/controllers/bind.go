@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"context"
-
+	"github.com/AH-dark/gravatar-with-qq-avatar/server/middlewares"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/hertz-contrib/etag"
+	"github.com/hertz-contrib/gzip"
 	"go.opentelemetry.io/otel"
 	"go.uber.org/fx"
 
@@ -21,6 +23,13 @@ func BindControllers(ctx context.Context, svr *server.Hertz, handlers HandlerGro
 	ctx, span := tracer.Start(ctx, "server.controllers.BindControllers")
 	defer span.End()
 
-	svr.GET("/avatar", handlers.AvatarHandlers.GetAvatar)
-	svr.GET("/avatar/:hash", handlers.AvatarHandlers.GetAvatar)
+	svr.Use(middlewares.RequestId())
+
+	avatarRouter := svr.Group("/avatar")
+	avatarRouter.Use(gzip.Gzip(gzip.BestCompression))
+	avatarRouter.Use(etag.New())
+	{
+		avatarRouter.GET("", handlers.AvatarHandlers.GetAvatar)
+		avatarRouter.GET("/:hash", handlers.AvatarHandlers.GetAvatar)
+	}
 }
